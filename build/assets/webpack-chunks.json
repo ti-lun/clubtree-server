@@ -1,0 +1,7 @@
+{
+  "javascript": {
+    "main": "http://localhost:8888/assets/main.ebc2fa661379e180eb80.js",
+    "vendor": "http://localhost:8888/assets/vendor.bundle.js"
+  },
+  "styles": {}
+}
