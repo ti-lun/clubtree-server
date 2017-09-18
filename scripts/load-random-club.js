@@ -16,6 +16,10 @@ mongoose.connection.once('open', (callback) => {
     let document = new models.Club({
         clubName: faker.commerce.productName() + ' Club',
         description: faker.hacker.phrase(),
+        imageURLs: {
+            logo: faker.image.image().replace('640', '150').replace('480', '150'),
+            cover: faker.image.image().replace('640', '560').replace('480', '180')
+        },
         meeting: {
             meetingLocation: faker.address.city(),
             meetingTime: faker.date.weekday()
@@ -30,7 +34,7 @@ mongoose.connection.once('open', (callback) => {
         foundedYear: faker.date.past(faker.random.number({ min: 1, max: 20 })).getFullYear(),
         createdDate: Date.now(),
         numberOfMembers: faker.random.number({ min: 3, max: 999 }),
-});
+    });
 
     document.save(function (err) {
         if (err) throw err;
