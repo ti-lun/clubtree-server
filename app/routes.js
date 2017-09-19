@@ -31,10 +31,18 @@ router.get('/clubs', function (req, res, next) {
   let promise = models.Club.find();
 
   // handle search queries
-  if (req.query.q) {
+  if (typeof req.query.q === 'string') {
     promise.where({ $text: { $search: req.query.q } });
     promise.select({ score: { $meta: "textScore" } });
     promise.sort({ score: { $meta: "textScore" } });
+  }
+
+  if (typeof req.query.category === 'string') {
+    promise.where({ category: req.query.category });
+    promise.collation({ locale: 'en', strength: 2 });
+  } else if (Array.isArray(req.query.category)) {
+    promise.where({ category: { $in: req.query.category } });
+    promise.collation({ locale: 'en', strength: 2 });
   }
 
   // handle field selectors
