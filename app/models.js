@@ -1,6 +1,5 @@
 var mongoose = require('mongoose');
 
-
 // Club Model
 var Club = mongoose.model('clubs', new mongoose.Schema({
   clubName: { type: String, text: true },
@@ -32,16 +31,19 @@ Club.schema.index({'$**': 'text'}); // Wildcard for now
 var Member = mongoose.model('members', new mongoose.Schema({
   firstName: String,
   lastName: String,
-  clubs: [ {type: mongoose.Schema.Types.ObjectId, ref: 'Club'}],
+  clubs: [{
+    club: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Club'
+    },
+    role: String,
+    organizer: Boolean
+  }],
   joinedDate: Date,
-  birthDay: Date
-}));
-
-// Login Model, separated from Member for security
-var Login = mongoose.model('login', new mongoose.Schema({
-  email: String,
-  password: String,
-  member: { type: mongoose.Schema.Types.ObjectId, ref: 'Member' }
+  birthday: Date,
+  profPicURL: String,
+  fbID: Number,
+  gpID: Number
 }));
 
 /*
@@ -55,5 +57,4 @@ var Tree = mongoose.model('trees', new mongoose.Schema({
 // Export all the models we created
 module.exports.Club = Club;
 module.exports.Member = Member;
-module.exports.Login = Login;
 //module.exports.Tree = Tree;
