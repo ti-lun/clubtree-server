@@ -104,10 +104,19 @@ router.post('/clubs/removeMember', function (req, res, next) {
 
 /* GET all members */
 router.get('/members', function (req, res, next) {
-  models.Member.find(function (err, members) {
-    if (err) { return next(err); }
+  let promise = models.Member.find();
+
+  if (typeof req.query.fbID === 'string') {
+    promise.where({ fbID: req.query.fbID });
+  }
+
+  promise.exec().then(function (members) {
     res.json(members);
+  }).catch(function (err) {
+    console.error(err);
+    res.status(500).end({ error: { code: 500, message: "Internal Server Error" } });
   });
+
 });
 
 /* POST new Member to DB */
