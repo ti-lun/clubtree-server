@@ -45,6 +45,14 @@ router.get('/clubs', function (req, res, next) {
     promise.collation({ locale: 'en', strength: 2 });
   }
 
+  if (typeof req.query.vibe === 'string') {
+    promise.where({ vibes: req.query.vibe });
+    promise.collation({ locale: 'en', strength: 2 });
+  } else if (Array.isArray(req.query.vibe)) {
+    promise.where({ vibes: { $in: req.query.vibe } });
+    promise.collation({ locale: 'en', strength: 2 });
+  }
+
   // handle field selectors
   if (typeof req.query.fields === 'string') {
     promise.select(req.query.fields.split(','));
