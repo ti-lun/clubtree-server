@@ -1,6 +1,7 @@
 'use strict';
 
 let _ = require('lodash');
+let config = require('config');
 let faker = require('faker');
 let mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
@@ -11,7 +12,7 @@ const clubCategories = require('../data/club-categories');
 
 const numberOfClubs = process.argv[2] || 1;
 
-mongoose.connect('mongodb://ct_test:rootstest@ds149491.mlab.com:49491/clubtree_dev');
+mongoose.connect(config.get('mongodb.hostname'));
 mongoose.connection.on('error', console.error.bind(console, 'connection error:'));
 
 mongoose.connection.once('open', (callback) => {
