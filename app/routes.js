@@ -4,13 +4,13 @@ var models = require('./models');
 var bodyParser = require('body-parser');
 var router = express.Router();
 
-/* GET home page. 
+/* GET home page.
 router.get('/', function(req, res) {
   res.render('index', { title: 'Express' });
 
 }); */
 
-/* GET login page. 
+/* GET login page.
 router.get('/login', function(req, res) {
     res.render('login');
 }); */
@@ -31,7 +31,7 @@ router.get('/clubs', function (req, res, next) {
   let promise = models.Club.find();
 
   // handle search queries
-  if (typeof req.query.q === 'string') {
+  if (req.query.q) {
     promise.where({ $text: { $search: req.query.q } });
     promise.select({ score: { $meta: "textScore" } });
     promise.sort({ score: { $meta: "textScore" } });
@@ -77,12 +77,61 @@ router.get('/clubs/:id', function (req, res, next) {
 
 /* POST new club to DB */
 router.post('/clubs', function (req, res, next) {
-  var club = new models.Club(req.body);
-  console.log(req.body);  //seeing what the post body is in the terminal
 
-  club.save(function (err, club) {
+  // first, find the organizer who made this club.
+  models.Member.findById(req.body.organizerID, function(err, organizer) {
     if (err) { return next(err); }
-    res.json(club);
+
+    let clubInitialize = {
+      clubName: req.body.clubName,
+      description: req.body.description,
+      category: req.body.category,
+      organizers: [organizer._id]
+    }
+
+    // create club.  Yay
+    var club = new models.Club(clubInitialize);
+
+    club.save((err, club) => {
+      if (err) { return next(err); }
+      console.log("organizer is still here right?", organizer);
+      // now update the organizer's list of clubs.
+      console.log("club is", club);
+      organizer.clubs.push({
+        club: club["_id"],
+        role: "Founder",
+        organizer: true
+      });
+
+      organizer.save((err, organizer) => {
+        if (err) {return next(err); }
+      });
+
+      res.json(club);
+    });
+  });
+});
+
+router.put('/clubs', function (req, res, next) {
+  models.Club.findById(req.body.id, function(err, club) {
+    if (err) {
+      res.send(err);
+    }
+
+    console.log("clubi s", club);
+
+    for (let field in req.body.updateFields) {
+      console.log("field updating is", field);
+      club[field] = req.body.updateFields[field]
+    }
+
+    club.save(function(err) {
+      if (err) {
+        req.send("when saving, got", err);
+      }
+
+      res.json({ message: "Club updated w" + req.body.updateFields });
+    });
   });
 });
 
@@ -118,6 +167,10 @@ router.get('/members', function (req, res, next) {
     promise.where({ fbID: req.query.fbID });
   }
 
+  if (typeof req.query["_id"] === 'string') {
+    promise.where({ "_id": req.query["_id"] });
+  }
+
   promise.exec().then(function (members) {
     res.json(members);
   }).catch(function (err) {
@@ -129,15 +182,11 @@ router.get('/members', function (req, res, next) {
 
 /* POST new Member to DB */
 router.post('/members', function (req, res, next) {
-  var member = new models.Member(req.body.member);
-  var login = new models.Login(req.body);
+  var member = new models.Member(req.body);
 
   member.save(function (err, member) {
     if (err) { return next(err); }
-    login.save(function (err, login) {
-      if (err) { return next(err); }
-      res.json(member);
-    });
+    res.json(member);
   });
 });
 

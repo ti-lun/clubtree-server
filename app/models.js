@@ -4,16 +4,12 @@ var mongoose = require('mongoose');
 var Club = mongoose.model('clubs', new mongoose.Schema({
   clubName: { type: String, text: true },
   description: { type: String, text: true },
-  imageURLs: {
-    logo: String,
-    cover: String
-  },
+  clubLogo: String,
+  clubCover: String,
   members: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Member' }],
   organizers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Member' }],
-  meeting: {
-    meetingLocation: { type: String, text: true },
-    meetingTime: { type: String, text: true }
-  },
+  meetingLocation: { type: String, text: true },
+  meetingDatesAndTimes: { type: Object },
   personality: [{
     question: String,
     answer: String
@@ -21,7 +17,11 @@ var Club = mongoose.model('clubs', new mongoose.Schema({
   vibes: [{ type: String, text: true }],
   category: { type: String, text: true },
   createdDate: Date,
-  foundedYear: Date
+  foundedYear: Date,
+  show: Boolean,
+  memberReq: String,
+  clubFeeAmount: Number,
+  clubFeePeriod: String
 }));
 
 // Club search index
