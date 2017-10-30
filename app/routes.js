@@ -31,7 +31,7 @@ router.get('/clubs', function (req, res, next) {
   let promise = models.Club.find();
 
   // handle search queries
-  if (req.query.q) {
+  if (typeof req.query.q === 'string') {
     promise.where({ $text: { $search: req.query.q } });
     promise.select({ score: { $meta: "textScore" } });
     promise.sort({ score: { $meta: "textScore" } });
@@ -78,7 +78,7 @@ router.get('/clubs/:id', function (req, res, next) {
 router.post('/clubs', function (req, res, next) {
 
   // first, find the organizer who made this club.
-  models.Member.findById(req.body.organizerID, function(err, organizer) {
+  models.Member.findById(req.body.organizerID, function (err, organizer) {
     if (err) { return next(err); }
 
     let clubInitialize = {
@@ -103,16 +103,18 @@ router.post('/clubs', function (req, res, next) {
       });
 
       organizer.save((err, organizer) => {
-        if (err) {return next(err); }
+        if (err) {
+          return next(err);
+        } else {
+          res.json(club);
+        }
       });
-
-      res.json(club);
     });
   });
 });
 
 router.put('/clubs', function (req, res, next) {
-  models.Club.findById(req.body.id, function(err, club) {
+  models.Club.findById(req.body.id, function (err, club) {
     if (err) {
       res.send(err);
     }
@@ -124,12 +126,12 @@ router.put('/clubs', function (req, res, next) {
       club[field] = req.body.updateFields[field]
     }
 
-    club.save(function(err) {
+    club.save(function (err) {
       if (err) {
         req.send("when saving, got", err);
+      } else {
+        res.json({ message: "Club updated w" + req.body.updateFields });
       }
-
-      res.json({ message: "Club updated w" + req.body.updateFields });
     });
   });
 });
