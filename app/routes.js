@@ -52,7 +52,6 @@ router.get('/clubs', function (req, res, next) {
     promise.where({ vibes: { $in: req.query.vibe } });
     promise.collation({ locale: 'en', strength: 2 });
   }
-
   // handle field selectors
   if (typeof req.query.fields === 'string') {
     promise.select(req.query.fields.split(','));
