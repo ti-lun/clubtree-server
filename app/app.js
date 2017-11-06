@@ -1,6 +1,7 @@
 var express = require('express');
 var cors = require('cors')
 var path = require('path');
+var config = require('config');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
@@ -12,7 +13,7 @@ mongoose.Promise = global.Promise;
 
 require('./models');
 
-mongoose.connect('mongodb://ct_test:rootstest@ds149491.mlab.com:49491/clubtree_dev');
+mongoose.connect(config.get('mongodb.hostname'));
 mongoose.connection.on('error', console.error.bind(console, 'connection error:'));
 
 var routes = require('./routes');
