@@ -70,7 +70,7 @@ var Member = mongoose.model('members', new mongoose.Schema({
   joinedDate: Date,
   birthday: Date,
   profPicURL: String,
-  fbID: Number,
+  fbID: String,
   gpID: Number
 }));
 
