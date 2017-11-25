@@ -122,8 +122,8 @@ router.post('/clubs', function (req, res, next) {
   });
 });
 
-router.put('/clubs/:id', function (req, res, next) {
-  models.Club.findById(req.params.id, function (err, club) {
+router.put('/clubs', function (req, res, next) {
+  models.Club.findById(req.body.id, function (err, club) {
     if (err) {
       return next(err);
     }
