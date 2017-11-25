@@ -69,7 +69,14 @@ router.get('/clubs', function (req, res, next) {
 
 router.get('/clubs/:id', function (req, res, next) {
   models.Club.findById(req.params.id, function (err, document) {
-    if (err) { return next(err); }
+    if (err) {
+      return next(err);
+    }
+
+    if (document === null) {
+      return next(null);
+    }
+
     res.json(document);
   });
 });
@@ -90,6 +97,8 @@ router.post('/clubs', function (req, res, next) {
 
     // create club.  Yay
     var club = new models.Club(clubInitialize);
+
+    club.calculateCompleteness();
 
     club.save((err, club) => {
       if (err) { return next(err); }
@@ -113,10 +122,14 @@ router.post('/clubs', function (req, res, next) {
   });
 });
 
-router.put('/clubs', function (req, res, next) {
-  models.Club.findById(req.body.id, function (err, club) {
+router.put('/clubs/:id', function (req, res, next) {
+  models.Club.findById(req.params.id, function (err, club) {
     if (err) {
-      res.send(err);
+      return next(err);
+    }
+
+    if (club === null) {
+      return next(null);
     }
 
     console.log("clubi s", club);
@@ -125,6 +138,8 @@ router.put('/clubs', function (req, res, next) {
       console.log("field updating is", field);
       club[field] = req.body.updateFields[field]
     }
+
+    club.calculateCompleteness();
 
     club.save(function (err) {
       if (err) {

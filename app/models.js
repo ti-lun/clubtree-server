@@ -1,7 +1,24 @@
+let _ = require('lodash');
 var mongoose = require('mongoose');
 
 // Club Model
-var Club = mongoose.model('clubs', new mongoose.Schema({
+let softRequiredFields = [
+  'clubName',
+  'description',
+  'members',
+  'organizers',
+  'meetingLocation',
+  'meetingDatesAndTimes',
+  'vibes',
+  'category',
+  'createdDate',
+  'foundedYear',
+  'memberReq',
+  'clubFeeAmount',
+  'clubFeePeriod'
+];
+
+let ClubSchema = new mongoose.Schema({
   clubName: { type: String, text: true },
   description: { type: String, text: true },
   clubLogo: String,
@@ -22,7 +39,18 @@ var Club = mongoose.model('clubs', new mongoose.Schema({
   memberReq: String,
   clubFeeAmount: Number,
   clubFeePeriod: String
-}));
+});
+
+ClubSchema.methods.calculateCompleteness = function () {
+  console.log('calculating completeness');
+  if (_(this).chain().pick(softRequiredFields).keys().length === softRequiredFields.length) {
+    this.show = true;
+  } else {
+    this.show = false;
+  }
+}
+
+var Club = mongoose.model('clubs', ClubSchema);
 
 // Club search index
 Club.schema.index({'$**': 'text'}); // Wildcard for now
