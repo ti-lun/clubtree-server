@@ -42,8 +42,7 @@ let ClubSchema = new mongoose.Schema({
 });
 
 ClubSchema.methods.calculateCompleteness = function () {
-  console.log('calculating completeness');
-  if (_(this).chain().pick(softRequiredFields).keys().length === softRequiredFields.length) {
+  if (_.keys(_.pick(this, softRequiredFields)).length === softRequiredFields.length) {
     this.show = true;
   } else {
     this.show = false;
