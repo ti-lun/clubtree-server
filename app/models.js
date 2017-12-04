@@ -43,7 +43,11 @@ let ClubSchema = new mongoose.Schema({
 
 ClubSchema.methods.calculateCompleteness = function () {
   if (_.keys(_.pick(this, softRequiredFields)).length === softRequiredFields.length) {
-    this.show = true;
+    if (_.isArray(this.vibes) && this.vibes.length === 3) {
+      this.show = true;
+    } else {
+      this.show = false;
+    }
   } else {
     this.show = false;
   }
@@ -52,7 +56,7 @@ ClubSchema.methods.calculateCompleteness = function () {
 var Club = mongoose.model('clubs', ClubSchema);
 
 // Club search index
-Club.schema.index({'$**': 'text'}); // Wildcard for now
+Club.schema.index({ '$**': 'text' }); // Wildcard for now
 
 // Member Model
 var Member = mongoose.model('members', new mongoose.Schema({
