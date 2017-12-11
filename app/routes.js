@@ -59,6 +59,8 @@ router.get('/clubs', function (req, res, next) {
     promise.select(req.query.fields);
   }
 
+  promise.where({ show: true });
+
   promise.exec().then(function (documents) {
     res.json(documents);
   }).catch(function (err) {
@@ -86,17 +88,18 @@ router.post('/clubs', function (req, res, next) {
 
   // first, find the organizer who made this club.
   models.Member.findById(req.body.organizerID, function (err, organizer) {
-    if (err) { return next(err); }
+    if (err) {
+      return next(err);
+    }
 
-    let clubInitialize = {
-      clubName: req.body.clubName,
-      description: req.body.description,
-      category: req.body.category,
-      organizers: [organizer._id]
+    if (organizer === null) {
+      return next(new Error('Could not find organizerID: ' + req.body.organizerID));
     }
 
     // create club.  Yay
-    var club = new models.Club(clubInitialize);
+    var club = new models.Club(req.body);
+
+    club.organizers.push(organizer._id);
 
     club.calculateCompleteness();
 
