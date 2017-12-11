@@ -19,26 +19,34 @@ let softRequiredFields = [
 ];
 
 let ClubSchema = new mongoose.Schema({
-  clubName: { type: String, text: true },
-  description: { type: String, text: true },
+  clubName: String,
+  description: String,
   clubLogo: String,
   clubCover: String,
   members: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Member' }],
   organizers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Member' }],
-  meetingLocation: { type: String, text: true },
+  meetingLocation: String,
   meetingDatesAndTimes: { type: Object },
   personality: [{
     question: String,
     answer: String
   }],
-  vibes: [{ type: String, text: true }],
-  category: { type: String, text: true },
+  vibes: [String],
+  category: String,
   createdDate: Date,
   foundedYear: Date,
   show: Boolean,
   memberReq: String,
   clubFeeAmount: Number,
   clubFeePeriod: String
+});
+
+ClubSchema.index({
+  clubName: 'text',
+  description: 'text',
+  meetingLocation: 'text',
+  vibes: 'text',
+  category: 'text'
 });
 
 ClubSchema.methods.calculateCompleteness = function () {
