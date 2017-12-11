@@ -13,7 +13,7 @@ mongoose.Promise = global.Promise;
 
 require('./models');
 
-mongoose.connect(config.get('mongodb.hostname'));
+mongoose.connect(config.get('mongodb.hostname'), { useMongoClient: true });
 mongoose.connection.on('error', console.error.bind(console, 'connection error:'));
 
 var routes = require('./routes');

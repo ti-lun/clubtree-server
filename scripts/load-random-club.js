@@ -12,7 +12,7 @@ const clubCategories = require('../data/club-categories');
 
 const numberOfClubs = process.argv[2] || 1;
 
-mongoose.connect(config.get('mongodb.hostname'));
+mongoose.connect(config.get('mongodb.hostname'), { useMongoClient: true });
 mongoose.connection.on('error', console.error.bind(console, 'connection error:'));
 
 mongoose.connection.once('open', (callback) => {
