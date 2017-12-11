@@ -1,10 +1,12 @@
 'use strict';
 
 let _ = require('lodash');
-let config = require('config');
 let faker = require('faker');
+let config = require('config');
+let Promise = require('bluebird');
 let mongoose = require('mongoose');
-mongoose.Promise = global.Promise;
+
+mongoose.Promise = Promise;
 
 const models = require('../app/models');
 const vibes = require('../data/vibes');
@@ -17,39 +19,53 @@ mongoose.connection.on('error', console.error.bind(console, 'connection error:')
 
 mongoose.connection.once('open', (callback) => {
 
-    for (let i = 0; i < numberOfClubs; i++) {
+    return Promise.mapSeries(_.times(numberOfClubs), function (i, index) {
+
         let document = new models.Club({
+            show: true,
             clubName: faker.commerce.productName() + ' Club',
             description: faker.hacker.phrase(),
+            meetingLocation: faker.finance.currencyCode() + ' ' + faker.random.number({ min: 100, max: 149 }),
+            meetingDatesAndTimes: generateRandomDateAndTime(),
             imageURLs: {
                 logo: faker.image.image().replace('640', '150').replace('480', '150'),
                 cover: faker.image.image().replace('640', '560').replace('480', '180')
             },
-            meeting: {
-                meetingLocation: faker.address.city(),
-                meetingTime: faker.date.weekday()
-            },
-            personality: {
-                values: ''
-            },
             members: [],
             organizers: [],
-            vibes: _.take(_.shuffle(vibes), faker.random.number({ min: 2, max: 5 })),
+            vibes: _.take(_.shuffle(vibes), faker.random.number({ min: 3, max: 5 })),
             category: _.head(_.shuffle(clubCategories)),
             foundedYear: faker.date.past(faker.random.number({ min: 1, max: 20 })).getFullYear(),
             createdDate: Date.now(),
+            memberReq: faker.lorem.sentence(),
+            clubFeeAmount: faker.finance.amount(),
+            clubFeePeriod: faker.random.arrayElement(['weekly', 'monthly', 'quarterly', 'annually', 'yearly']),
             numberOfMembers: faker.random.number({ min: 3, max: 999 }),
         });
 
-        document.save(function (err) {
-            if (err) throw err;
-
+        return Promise.try(function () {
+            return document.save();
+        }).then(function () {
             console.log('inserted 1 random club profile: ' + document._id);
             console.log(JSON.stringify(document, null, 4));
-
-            mongoose.connection.db.close(function (err) {
-                if (err) throw err;
-            });
         });
-    }
+    }).finally(function () {
+        mongoose.connection.db.close(function (err) {
+            if (err) throw err;
+        });
+    });
 });
+
+function generateRandomDateAndTime() {
+    let weekdays = _.union(_.times(3, faker.date.weekday));
+    let response = { meetingDays: weekdays };
+
+    weekdays.forEach(function (day) {
+        response[day] = {
+            start: { hour: faker.random.number({ min: 1, max: 12 }), meridian: 'AM' },
+            end: { hour: faker.random.number({ min: 1, max: 12 }), meridian: 'PM' }
+        }
+    })
+
+    return response;
+}
