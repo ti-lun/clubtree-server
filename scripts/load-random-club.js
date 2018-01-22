@@ -23,6 +23,7 @@ mongoose.connection.once('open', (callback) => {
 
         let document = new models.Club({
             show: true,
+            real: false,
             clubName: faker.commerce.productName() + ' Club',
             description: faker.hacker.phrase(),
             meetingLocation: faker.finance.currencyCode() + ' ' + faker.random.number({ min: 100, max: 149 }),
