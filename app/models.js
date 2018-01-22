@@ -27,6 +27,7 @@ let ClubSchema = new mongoose.Schema({
   organizers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Member' }],
   meetingLocation: String,
   meetingDatesAndTimes: { type: Object },
+  meetingTimes: String,
   personality: [{
     question: String,
     answer: String
@@ -36,7 +37,9 @@ let ClubSchema = new mongoose.Schema({
   createdDate: Date,
   foundedYear: Date,
   show: Boolean,
+  real: Boolean,
   memberReq: String,
+  feeDescription: String,
   clubFeeAmount: Number,
   clubFeePeriod: String
 });

@@ -27,15 +27,13 @@ mongoose.connection.once('open', (callback) => {
             description: faker.hacker.phrase(),
             meetingLocation: faker.finance.currencyCode() + ' ' + faker.random.number({ min: 100, max: 149 }),
             meetingDatesAndTimes: generateRandomDateAndTime(),
-            imageURLs: {
-                logo: faker.image.image().replace('640', '150').replace('480', '150'),
-                cover: faker.image.image().replace('640', '560').replace('480', '180')
-            },
+            clubLogo: faker.image.image().replace('640', '150').replace('480', '150'),
+            clubCover: faker.image.image().replace('640', '560').replace('480', '180'),
             members: [],
             organizers: [],
             vibes: _.take(_.shuffle(vibes), faker.random.number({ min: 3, max: 5 })),
             category: _.head(_.shuffle(clubCategories)),
-            foundedYear: faker.date.past(faker.random.number({ min: 1, max: 20 })).getFullYear(),
+            foundedYear: faker.date.past(faker.random.number({ min: 1, max: 20 })),
             createdDate: Date.now(),
             memberReq: faker.lorem.sentence(),
             clubFeeAmount: faker.finance.amount(),
