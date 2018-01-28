@@ -79,7 +79,25 @@ function load(row) {
     document = _.assign(document, row);
     document = new Club(document);
 
-    return document.save().then(function (response) {
+    return Promise.try(function () {
+        if (document.clubLogo) {
+            let matches = document.clubLogo.match(/id=(.+)/);
+            if (matches[1]) {
+                let imageURL = 'https://drive.google.com/thumbnail?id=' + matches[1];
+                document.clubLogo = imageURL;
+            }
+        }
+    }).then(function () {
+        if (document.clubCover) {
+            let matches = document.clubCover.match(/id=(\w+)/);
+            if (matches[1]) {
+                let imageURL = 'https://drive.google.com/thumbnail?id=' + matches[1];
+                document.clubCover = imageURL;
+            }
+        }
+    }).then(function () {
+        return document.save();
+    }).then(function (response) {
         console.log('inserted: ' + response.clubName);
     });
 }
