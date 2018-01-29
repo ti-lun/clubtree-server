@@ -34,7 +34,6 @@ router.get('/clubs', function (req, res, next) {
   if (typeof req.query.q === 'string') {
     promise.where({ $text: { $search: req.query.q } });
     promise.select({ score: { $meta: "textScore" } });
-    promise.sort({ score: { $meta: "textScore" } });
   }
 
   if (typeof req.query.category === 'string') {
@@ -57,6 +56,15 @@ router.get('/clubs', function (req, res, next) {
     promise.select(req.query.fields.split(','));
   } else if (typeof req.query.fields === 'object') {
     promise.select(req.query.fields);
+  }
+
+  // handle sort
+  if (typeof req.query.sort === 'string') {
+    if (req.query.sort === 'relevance') {
+      promise.sort({ score: { $meta: "textScore" } });
+    } else if (req.query.sort === 'new') {
+      promise.sort({ createdDate: -1 });
+    }
   }
 
   promise.where({ show: true });

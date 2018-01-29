@@ -73,6 +73,7 @@ function load(row) {
     let document = {
         show: true,
         real: true,
+        createdDate: Date.now(),
         vibes: _.concat([], row.vibes1, row.vibes2.split(';'), row.vibes3)
     };
 
