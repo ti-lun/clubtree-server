@@ -96,6 +96,8 @@ function load(row) {
             }
         }
     }).then(function () {
+        document.category = document.category.replace('/', ' & ');
+    }).then(function () {
         return document.save();
     }).then(function (response) {
         console.log('inserted: ' + response.clubName);
