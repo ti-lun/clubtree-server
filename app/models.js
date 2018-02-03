@@ -21,8 +21,17 @@ let softRequiredFields = [
 let ClubSchema = new mongoose.Schema({
   clubName: String,
   description: String,
-  clubLogo: String,
-  clubCover: String,
+  contact: String,
+  email: String,
+  website: String,
+  clubLogo: {
+    type: String,
+    default: 'https://i.imgur.com/Wvuqswg.png'
+  },
+  clubCover: {
+    type: String,
+    default: 'https://i.imgur.com/TA0s69w.png'
+  },
   members: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Member' }],
   organizers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Member' }],
   meetingLocation: String,
