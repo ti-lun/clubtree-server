@@ -1,23 +1,29 @@
-[
-    "close-knit",
-    "family",
-    "teamwork",
-    "low commitment",
-    "casual",
-    "wild",
-    "fun",
-    "chill",
-    "laid back",
-    "dynamic",
-    "exciting",
-    "relaxing",
-    "professional",
-    "intellectual",
-    "adventurous",
-    "party",
-    "intense",
-    "artsy",
-    "nerdy",
-    "safe space",
-    "copassionate"
-]
+{
+    "Time": [
+        "A lot, almost like a one-unit class",
+        "Quite a bit, ~5 hrs/week",
+        "Not very much, ~2 hrs/week",
+        "Low commitment",
+        "Attendance is optional"
+    ],
+    "Energy": [
+        "Super lit",
+        "Fun",
+        "Chill",
+        "Laid back",
+        "Focused",
+        "Exciting",
+        "Relaxing"
+    ],
+    "Personality": [
+        "Professional",
+        "Intellectual",
+        "Adventurous",
+        "Party-loving",
+        "Intense",
+        "Artsy",
+        "Nerdy",
+        "Safe space",
+        "Compassionate"
+    ]
+}

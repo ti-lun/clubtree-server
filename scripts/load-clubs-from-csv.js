@@ -9,23 +9,17 @@ let mongoose = require('mongoose');
 mongoose.Promise = Promise;
 
 const Club = require('../app/models').Club;
+const helper = require('../app/helper');
 const FILEPATH = process.argv[2] || printUsage();
 const HEADERS = [
-    'timestamp',
-    'username',
+    '1',
     'clubName',
     'category',
-    'foundedYear',
-    'description',
-    'meetingLocation',
-    'meetingTimes',
-    'memberReq',
-    'feeDescription',
-    'vibes1',
-    'vibes2',
-    'vibes3',
-    'clubLogo',
-    'clubCover',
+    'contact',
+    '5',
+    'email',
+    'website',
+    'description'
 ];
 
 function main() {
@@ -74,30 +68,30 @@ function load(row) {
         show: true,
         real: true,
         createdDate: Date.now(),
-        vibes: _.concat([], row.vibes1, row.vibes2.split(';'), row.vibes3)
+        vibes: helper.generateRandomVibes(),
     };
 
     document = _.assign(document, row);
     document = new Club(document);
 
     return Promise.try(function () {
-        if (document.clubLogo) {
-            let matches = document.clubLogo.match(/id=(.+)/);
-            if (matches[1]) {
-                let imageURL = 'https://drive.google.com/thumbnail?id=' + matches[1];
-                document.clubLogo = imageURL;
-            }
-        }
+        // if (document.clubLogo) {
+        //     let matches = document.clubLogo.match(/id=(.+)/);
+        //     if (matches[1]) {
+        //         let imageURL = 'https://drive.google.com/thumbnail?id=' + matches[1];
+        //         document.clubLogo = imageURL;
+        //     }
+        // }
     }).then(function () {
-        if (document.clubCover) {
-            let matches = document.clubCover.match(/id=(\w+)/);
-            if (matches[1]) {
-                let imageURL = 'https://drive.google.com/thumbnail?id=' + matches[1];
-                document.clubCover = imageURL;
-            }
-        }
+        // if (document.clubCover) {
+        //     let matches = document.clubCover.match(/id=(\w+)/);
+        //     if (matches[1]) {
+        //         let imageURL = 'https://drive.google.com/thumbnail?id=' + matches[1];
+        //         document.clubCover = imageURL;
+        //     }
+        // }
     }).then(function () {
-        document.category = document.category.replace('/', ' & ');
+        // document.category = document.category.replace('/', ' & ');
     }).then(function () {
         return document.save();
     }).then(function (response) {

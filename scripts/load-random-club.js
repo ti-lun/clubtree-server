@@ -9,7 +9,7 @@ let mongoose = require('mongoose');
 mongoose.Promise = Promise;
 
 const models = require('../app/models');
-const vibes = require('../data/vibes');
+const helper = require('../app/helper');
 const clubCategories = require('../data/club-categories');
 
 const numberOfClubs = process.argv[2] || 1;
@@ -32,7 +32,7 @@ mongoose.connection.once('open', (callback) => {
             clubCover: faker.image.image().replace('640', '560').replace('480', '180'),
             members: [],
             organizers: [],
-            vibes: _.take(_.shuffle(vibes), faker.random.number({ min: 3, max: 5 })),
+            vibes: helper.generateRandomVibes(),
             category: _.head(_.shuffle(clubCategories)),
             foundedYear: faker.date.past(faker.random.number({ min: 1, max: 20 })),
             createdDate: Date.now(),
