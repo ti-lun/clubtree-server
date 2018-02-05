@@ -60,7 +60,7 @@ router.get('/clubs', function (req, res, next) {
 
   // handle sort
   if (typeof req.query.sort === 'string') {
-    if (req.query.sort === 'relevance') {
+    if (typeof req.query.q === 'string' && req.query.sort === 'relevance') {
       promise.sort({ score: { $meta: "textScore" } });
     } else if (req.query.sort === 'new') {
       promise.sort({ createdDate: -1 });
