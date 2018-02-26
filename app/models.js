@@ -1,5 +1,9 @@
 let _ = require('lodash');
+let Promise = require('bluebird');
 var mongoose = require('mongoose');
+var ExtendedQueryTag = require('./ExtendedQueryTag');
+
+ExtendedQueryTag = new ExtendedQueryTag('./data/extended-tags.txt');
 
 // Club Model
 let softRequiredFields = [
@@ -20,6 +24,7 @@ let softRequiredFields = [
 
 let ClubSchema = new mongoose.Schema({
   clubName: String,
+  expandedQuery: String,
   description: String,
   contact: String,
   email: String,
@@ -56,9 +61,18 @@ let ClubSchema = new mongoose.Schema({
 ClubSchema.index({
   clubName: 'text',
   description: 'text',
+  expandedQuery: 'text',
   meetingLocation: 'text',
   vibes: 'text',
   category: 'text'
+});
+
+ClubSchema.pre('save', function (next) {
+  return Promise.try(() => {
+    return ExtendedQueryTag.generate(this.description);
+  }).then((tags) => {
+    this.expandedQuery = tags;
+  }).asCallback(next);
 });
 
 ClubSchema.methods.calculateCompleteness = function () {
@@ -71,12 +85,9 @@ ClubSchema.methods.calculateCompleteness = function () {
   } else {
     this.show = false;
   }
-}
+};
 
 var Club = mongoose.model('clubs', ClubSchema);
-
-// Club search index
-Club.schema.index({ '$**': 'text' }); // Wildcard for now
 
 // Member Model
 var Member = mongoose.model('members', new mongoose.Schema({
@@ -97,15 +108,6 @@ var Member = mongoose.model('members', new mongoose.Schema({
   gpID: Number
 }));
 
-/*
-// Tree Model
-var Tree = mongoose.model('trees', new mongoose.Schema({
-  Organizers: [{ username: String, rank: Number }],
-  Members: [{ username: String, rank: Number }]
-}));
-*/
-
 // Export all the models we created
 module.exports.Club = Club;
 module.exports.Member = Member;
-//module.exports.Tree = Tree;
