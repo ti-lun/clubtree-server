@@ -16,9 +16,6 @@ module.exports = class ExtendedQueryTag {
                 set = set.filter((e) => e);
                 return set;
             });
-            // querySet = querySet.filter((set) => {
-                
-            // });
             this.sets = querySet;
         });
     }
