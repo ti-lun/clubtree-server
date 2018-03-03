@@ -64,3 +64,6 @@ Korean, K-pop, hallyu, Korea, Korean-American, korean american
 Latin, latino, latina, latinx, hispanic, latinos, latinas
 job, career, future, professional
 non-profit, charity, non profit
+sport, athlete, athletes
+business information management, bim
+pharmacy, pharmaceutical, pharmsci, pharm sci

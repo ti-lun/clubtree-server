@@ -19,7 +19,10 @@ const HEADERS = [
     '5',
     'email',
     'website',
-    'description'
+    'description',
+    '9',
+    'club logo',
+    'club cover'
 ];
 
 function main() {
