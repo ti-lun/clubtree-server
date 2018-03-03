@@ -18,8 +18,7 @@ let softRequiredFields = [
   'createdDate',
   'foundedYear',
   'memberReq',
-  'clubFeeAmount',
-  'clubFeePeriod'
+  'feeDescription'
 ];
 
 let ClubSchema = new mongoose.Schema({
@@ -53,9 +52,7 @@ let ClubSchema = new mongoose.Schema({
   show: Boolean,
   real: Boolean,
   memberReq: String,
-  feeDescription: String,
-  clubFeeAmount: Number,
-  clubFeePeriod: String
+  feeDescription: String
 });
 
 ClubSchema.index({
