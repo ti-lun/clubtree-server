@@ -40,7 +40,7 @@ router.get('/clubs', function (req, res, next) {
     promise.where({ category: req.query.category });
     promise.collation({ locale: 'en', strength: 2 });
   } else if (Array.isArray(req.query.category)) {
-    promise.where({ category: { $in: req.query.category } });
+    promise.where({ category: { $all: req.query.category } });
     promise.collation({ locale: 'en', strength: 2 });
   }
 

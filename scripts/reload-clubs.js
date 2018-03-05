@@ -11,19 +11,10 @@ mongoose.Promise = Promise;
 const Club = require('../app/models').Club;
 const helper = require('../app/helper');
 const FILEPATH = process.argv[2] || printUsage();
-const HEADERS = [
-    '1',
-    'clubName',
-    'category',
-    'contact',
-    '5',
-    'email',
-    'website',
-    'description',
-    '9',
-    'club logo',
-    'club cover'
-];
+
+// which properties of the model are arrays? this variable can tell us
+const listOfArrays = _.keys(_.pickBy(Club.schema.paths, (p) => p.instance === 'Array'));
+
 
 function main() {
 
@@ -51,7 +42,6 @@ function read(filepath) {
         let rows = [];
         let options = {
             noheader: false,
-            headers: HEADERS
         };
         csvdata(options)
             .fromFile(filepath)
@@ -76,6 +66,8 @@ function load(row) {
         vibes: helper.generateRandomVibes(),
     };
 
+    row = convert(row);
+
     document = _.assign(document, row);
     document = new Club(document);
 
@@ -84,6 +76,23 @@ function load(row) {
     }).then(function (response) {
         console.log('inserted: ' + response.clubName);
     });
+}
+
+function convert(row) {
+
+    if (typeof row.description === 'string') {
+        row.description.replace('\r\n', ' ');
+    }
+
+    listOfArrays.forEach(function (path) {
+        console.log(path);
+        if (typeof row[path] === 'string') {
+            console.lo
+            row[path] = row[path].split(';');
+        }
+    });
+
+    return row;
 }
 
 function printUsage() {

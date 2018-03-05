@@ -28,6 +28,11 @@ let ClubSchema = new mongoose.Schema({
   contact: String,
   email: String,
   website: String,
+  size: {
+    type: String,
+    minlength: 0,
+    maxlength: 1,
+  },
   clubLogo: {
     type: String,
     default: 'https://i.imgur.com/Wvuqswg.png'
@@ -41,12 +46,13 @@ let ClubSchema = new mongoose.Schema({
   meetingLocation: String,
   meetingDatesAndTimes: { type: Object },
   meetingTimes: String,
+  memberReq: String,
   personality: [{
     question: String,
     answer: String
   }],
   vibes: [String],
-  category: String,
+  category: [String],
   createdDate: Date,
   foundedYear: Date,
   show: Boolean,

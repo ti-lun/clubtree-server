@@ -28,7 +28,7 @@ module.exports = class ExtendedQueryTag {
             this.sets.forEach((set) => {
                 let matchingTag = null;
                 let values = set.map((tag) => {
-                    if (matchingTag === null && description.match(tag.getRegex())) {
+                    if (matchingTag === null && description && description.match(tag.getRegex())) {
                         matchingTag = tag;
                     }
                     return tag.getValue();
