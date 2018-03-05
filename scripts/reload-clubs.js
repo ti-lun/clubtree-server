@@ -85,9 +85,7 @@ function convert(row) {
     }
 
     listOfArrays.forEach(function (path) {
-        console.log(path);
         if (typeof row[path] === 'string') {
-            console.lo
             row[path] = row[path].split(';');
         }
     });
