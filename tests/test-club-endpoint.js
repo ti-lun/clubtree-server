@@ -9,12 +9,14 @@ let Club = require('../app/models.js').Club;
 
 describe(__filename + '\n', function () {
 
+    let documents;
+
     before('reset database', function () {
         return Club.remove({});
     });
 
     before('add clubs', function () {
-        let documents = [{
+        documents = [{
             show: true,
             category: ['123', 'abc']
         }, {
@@ -22,7 +24,10 @@ describe(__filename + '\n', function () {
             category: ['abc', 'xyz']
         }, {
             show: true,
-            category: ['xyz', '123']
+            category: ['xyz', '???']
+        }, {
+            show: true,
+            category: ['???', '123']
         }];
         return Promise.map(documents, function (document) {
             document = new Club(document);
@@ -36,7 +41,7 @@ describe(__filename + '\n', function () {
             return request(app).get('/clubs')
                 .then(function (res) {
                     expect(res.status).to.equal(200);
-                    expect(res.body).to.have.length(3);
+                    expect(res.body).to.have.length(documents.length);
                 });
         });
 
@@ -57,6 +62,17 @@ describe(__filename + '\n', function () {
                 .then(function (res) {
                     expect(res.status).to.equal(200);
                     expect(res.body).to.have.length(1);
+                });
+        });
+
+        it('performs OR filter when multiple subcategory filters specified', function () {
+            let url = '/clubs'
+                + '?subcategory=123'
+                + '&subcategory=abc';
+            return request(app).get(url)
+                .then(function (res) {
+                    expect(res.status).to.equal(200);
+                    expect(res.body).to.have.length(3);
                 });
         });
     });
