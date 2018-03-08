@@ -81,7 +81,8 @@ function load(row) {
 function convert(row) {
 
     if (typeof row.description === 'string') {
-        row.description.replace('\r\n', ' ');
+        row.description = row.description.replace(/\\r\\n/g, ' ');
+        row.description = row.description.replace(/ +/g, ' ');
     }
 
     listOfArrays.forEach(function (path) {
