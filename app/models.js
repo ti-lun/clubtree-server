@@ -33,14 +33,8 @@ let ClubSchema = new mongoose.Schema({
     minlength: 0,
     maxlength: 1,
   },
-  clubLogo: {
-    type: String,
-    default: 'https://i.imgur.com/Wvuqswg.png'
-  },
-  clubCover: {
-    type: String,
-    default: 'https://i.imgur.com/TA0s69w.png'
-  },
+  clubLogo: String,
+  clubCover: String,
   members: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Member' }],
   organizers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Member' }],
   meetingLocation: String,
@@ -76,6 +70,16 @@ ClubSchema.pre('save', function (next) {
   }).then((tags) => {
     this.expandedQuery = tags;
   }).asCallback(next);
+});
+
+ClubSchema.pre('save', function (next) {
+  if (_.isEmpty(this.clubLogo)) {
+    this.clubLogo = 'https://i.imgur.com/Wvuqswg.png';
+  }
+  if (_.isEmpty(this.clubCover)) {
+    this.clubCover = 'https://i.imgur.com/TA0s69w.png';
+  }
+  next();
 });
 
 ClubSchema.methods.calculateCompleteness = function () {

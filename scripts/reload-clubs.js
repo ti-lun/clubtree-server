@@ -23,7 +23,7 @@ function main() {
 
     mongoose.connection.once('open', (callback) => {
         return Promise.try(function () {
-            return Club.remove({ real: true });
+            return mongoose.connection.dropDatabase();
         }).then(function () {
             return read(FILEPATH);
         }).mapSeries(function (row) {
