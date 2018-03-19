@@ -17,7 +17,7 @@ describe(__filename + '\n', function () {
     });
 
     before('add clubs', function () {
-        let documents = _.times(24, () => { return { show: true } });
+        documents = _.times(24, () => { return { show: true } });
         return Promise.map(documents, function (document) {
             document = new Club(document);
             return document.save();
@@ -26,6 +26,14 @@ describe(__filename + '\n', function () {
 
     describe('GET /clubs', function () {
 
+        it('can get all documents when no pagination specified', function () { 
+            return request(app).get('/clubs') 
+                .then(function (res) { 
+                    expect(res.status).to.equal(200); 
+                    expect(res.body).to.have.length(24); 
+                }); 
+        }); 
+ 
         it('can paginate through all documents', function () {
             return Promise.map([0, 1, 2], function (page) {
                 let url = '/clubs?pageNumber=' + page;

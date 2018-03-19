@@ -83,14 +83,13 @@ router.get('/clubs', function (req, res, next) {
   if (typeof req.query.pageNumber === 'string') {
     let parsedPageNumber = parseInt(req.query.pageNumber);
     if (Number.isInteger(parsedPageNumber) && parsedPageNumber >= 0) {
+      promise.limit(10);
       promise.skip(10 * req.query.pageNumber);
     } else {
       next(BadRequest('Invalid pageNumber: ' + req.query.pageNumber));
       return;
     }
   }
-
-  promise.limit(10);
 
   promise.exec().then(function (documents) {
     res.json(documents);
