@@ -4,6 +4,8 @@ var models = require('./models');
 var bodyParser = require('body-parser');
 var router = express.Router();
 
+let BadRequest = require('http-errors')['400'];
+
 /* GET home page.
 router.get('/', function(req, res) {
   res.render('index', { title: 'Express' });
@@ -76,6 +78,19 @@ router.get('/clubs', function (req, res, next) {
   }
 
   promise.where({ show: true });
+
+  // handle pagination
+  if (typeof req.query.pageNumber === 'string') {
+    let parsedPageNumber = parseInt(req.query.pageNumber);
+    if (Number.isInteger(parsedPageNumber) && parsedPageNumber >= 0) {
+      promise.skip(10 * req.query.pageNumber);
+    } else {
+      next(BadRequest('Invalid pageNumber: ' + req.query.pageNumber));
+      return;
+    }
+  }
+
+  promise.limit(10);
 
   promise.exec().then(function (documents) {
     res.json(documents);

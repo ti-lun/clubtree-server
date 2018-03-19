@@ -7,6 +7,8 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
+let HttpError = require('http-errors');
+
 // require Mongoose schemas
 var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
@@ -44,6 +46,19 @@ app.use(function (req, res, next) {
 });
 
 // error handler
+app.use(function (err, req, res, next) {
+  for (code in HttpError) {
+    if (err instanceof HttpError[code]) {
+      let response = { error: { code: err.statusCode, message: err.message } };
+      res.status(code);
+      res.send(response);
+      return;
+    }
+  }
+
+  next(err);
+});
+
 app.use(function (err, req, res, next) {
   let response = { error: { code: 500, message: 'Internal Server Error' } };
   res.status(500);

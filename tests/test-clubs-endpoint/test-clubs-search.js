@@ -4,8 +4,8 @@ let expect = require('chai').expect;
 let request = require('supertest');
 let Promise = require('bluebird');
 
-let app = require('../app/app.js');
-let Club = require('../app/models.js').Club;
+let app = require('../../app/app.js');
+let Club = require('../../app/models.js').Club;
 
 describe(__filename + '\n', function () {
 
@@ -36,14 +36,6 @@ describe(__filename + '\n', function () {
     });
 
     describe('GET /clubs', function () {
-
-        it('can get all documents', function () {
-            return request(app).get('/clubs')
-                .then(function (res) {
-                    expect(res.status).to.equal(200);
-                    expect(res.body).to.have.length(documents.length);
-                });
-        });
 
         it('can filter by category', function () {
             return request(app).get('/clubs')
