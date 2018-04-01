@@ -259,9 +259,11 @@ router.get('/events', function (req, res, next) {
   if (typeof req.query.startTime === 'string') {
     if (req.query.startTime === 'future') {
       promise.where({ start_time: { $gte: now } });
+      promise.sort({ start_time: 1 });
     } else if (req.query.startTime === 'past') {
       let past = now.clone().subtract(1, 'month');
       promise.where({ start_time: { $lte: now, $gte: past } });
+      promise.sort({ start_time: -1 });
     }
   }
 
@@ -269,7 +271,7 @@ router.get('/events', function (req, res, next) {
     promise.where({ origin: req.query.origin });
   }
 
-  promise.sort({ start_time: -1 });
+  promise.limit(10);
 
   promise.exec().then(function (documents) {
     return Promise.map(documents, function (event) {
