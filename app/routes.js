@@ -1,8 +1,13 @@
+'use strict';
+
+let moment = require('moment');
 var express = require('express');
 var mongoose = require('mongoose');
-var models = require('./models');
 var bodyParser = require('body-parser');
 var router = express.Router();
+
+var models = require('./models');
+let Event = require('./models/event');
 
 let BadRequest = require('http-errors')['400'];
 
@@ -236,6 +241,29 @@ router.post('/members', function (req, res, next) {
   member.save(function (err, member) {
     if (err) { return next(err); }
     res.json(member);
+  });
+});
+
+/* GET all clubs that match a search query */
+router.get('/events', function (req, res, next) {
+  let promise = Event.find();
+
+  // handle search queries
+  let now = moment();
+  if (typeof req.query.startTime === 'string') {
+    if (req.query.startTime === 'future') {
+      promise.where({ start_time: { $gte: now } });
+    } else if (req.query.startTime === 'past') {
+      let past = now.clone().subtract(1, 'month');
+      promise.where({ start_time: { $lte: now, $gte: past } });
+    }
+  }
+
+  promise.exec().then(function (documents) {
+    res.json(documents);
+  }).catch(function (err) {
+    console.error(err);
+    res.status(500).end({ error: { code: 500, message: "Internal Server Error" } });
   });
 });
 

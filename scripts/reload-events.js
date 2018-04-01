@@ -32,6 +32,10 @@ function main() {
         }).mapSeries(function (row) {
             // console.log('---------------------- ' + row.website);
             return load(row.website);
+        }).reduce(function (totalCount, currentCount) {
+            return totalCount + currentCount;
+        }, 0).then(function (totalCount) {
+            console.log('added ' + totalCount + ' events');
         }).finally(function () {
             mongoose.connection.db.close(function (err) {
                 if (err) throw err;
@@ -62,7 +66,8 @@ function read(filepath) {
 }
 
 function load(website) {
-    let links = []
+    let count = 0;
+    let links = [];
 
     website = website.split(';');
     website.forEach(function (link) {
@@ -114,7 +119,9 @@ function load(website) {
                     // console.log('saving: ' + event.name + ' (' + event.id + ')');
                     // console.log(event.end_time);
                     let document = new Event(event);
-                    return document.save();           
+                    return document.save().tap(function () {
+                        count++;
+                    });
                 });
             }).catch(function (err) {
                 if (err.response.error.message === 'Unknown path components: /events') {
@@ -125,6 +132,8 @@ function load(website) {
                 }
             });
         }
+    }).then(function () {
+        return count;
     });
 }
 

@@ -948,6 +948,11 @@
         "supports-color": "4.4.0"
       }
     },
+    "moment": {
+      "version": "2.22.0",
+      "resolved": "https://registry.npmjs.org/moment/-/moment-2.22.0.tgz",
+      "integrity": "sha512-1muXCh8jb1N/gHRbn9VDUBr0GYb8A/aVcHlII9QSB68a50spqEVLIGN6KVmCOnSvJrUhC0edGgKU5ofnGXdYdg=="
+    },
     "mongoose": {
       "version": "https://registry.npmjs.org/mongoose/-/mongoose-4.11.1.tgz",
       "integrity": "sha1-JWC22J50SwWFfQJMq4sxYGZxbj4=",
