@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 
 let EventSchema = new mongoose.Schema({
     origin: String,
+    eventLink: String,
     description: String,
     name: String,
     place: {

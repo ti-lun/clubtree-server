@@ -18,8 +18,10 @@ describe(__filename + '\n', function () {
 
     before('add events', function () {
         documents = [{
+            origin: 'CLUB-0001',
             start_time: moment().add(5, 'days')
         }, {
+            origin: 'CLUB-0002',
             start_time: moment().subtract(5, 'days')
         }];
         return Promise.map(documents, function (document) {
@@ -42,6 +44,15 @@ describe(__filename + '\n', function () {
         it('can get future events', function () {
             return request(app).get('/events')
                 .query({ startTime: 'future' })
+                .then(function (res) {
+                    expect(res.status).to.equal(200);
+                    expect(res.body).to.have.length(1);
+                });
+        });
+
+        it('can filter by club', function () {
+            return request(app).get('/events')
+                .query({ origin: 'CLUB-0001' })
                 .then(function (res) {
                     expect(res.status).to.equal(200);
                     expect(res.body).to.have.length(1);

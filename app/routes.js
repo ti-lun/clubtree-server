@@ -66,6 +66,11 @@ router.get('/clubs', function (req, res, next) {
     promise.where({ vibes: { $in: req.query.vibe } });
     promise.collation({ locale: 'en', strength: 2 });
   }
+
+  if (typeof req.query.origin === 'string') {
+    promise.where({ origin: req.query.origin });
+  }
+
   // handle field selectors
   if (typeof req.query.fields === 'string') {
     promise.select(req.query.fields.split(','));
@@ -257,6 +262,10 @@ router.get('/events', function (req, res, next) {
       let past = now.clone().subtract(1, 'month');
       promise.where({ start_time: { $lte: now, $gte: past } });
     }
+  }
+
+  if (typeof req.query.origin === 'string') {
+    promise.where({ origin: req.query.origin });
   }
 
   promise.exec().then(function (documents) {

@@ -31,7 +31,7 @@ function main() {
             return read(FILEPATH);
         }).mapSeries(function (row) {
             // console.log('---------------------- ' + row.website);
-            return load(row.website);
+            return load(row.website, row.origin);
         }).reduce(function (totalCount, currentCount) {
             return totalCount + currentCount;
         }, 0).then(function (totalCount) {
@@ -65,7 +65,7 @@ function read(filepath) {
     });
 }
 
-function load(website) {
+function load(website, origin) {
     let count = 0;
     let links = [];
 
@@ -95,7 +95,7 @@ function load(website) {
             return link;
         }).catch(function (err) {
             if (_.get(err, 'response.error.message') === 'No node specified') {
-                // link not usable as is, but once we append "/events" it will solve the error
+                // link not usable as is, but once we append "/events", hopefully it will solve the error
                 return link;
             } else if (_.includes(_.get(err, 'response.error.message'), 'Cannot query users by their username')) {
                 // generally can't get events from user profiles, so ignore these links
@@ -119,6 +119,8 @@ function load(website) {
                     // console.log('saving: ' + event.name + ' (' + event.id + ')');
                     // console.log(event.end_time);
                     let document = new Event(event);
+                    document.origin = origin;
+                    document.eventLink = 'https://www.facebook.com' + link;
                     return document.save().tap(function () {
                         count++;
                     });
