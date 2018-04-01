@@ -269,6 +269,8 @@ router.get('/events', function (req, res, next) {
     promise.where({ origin: req.query.origin });
   }
 
+  promise.sort({ start_time: -1 });
+
   promise.exec().then(function (documents) {
     return Promise.map(documents, function (event) {
       return models.Club.findOne({ origin: event.origin }).then(function (club) {

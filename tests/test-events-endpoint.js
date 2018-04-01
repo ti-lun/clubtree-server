@@ -34,10 +34,10 @@ describe(__filename + '\n', function () {
     before('add events', function () {
         documents = [{
             origin: 'CLUB-0001',
-            start_time: moment().add(5, 'days')
+            start_time: moment().subtract(5, 'days')
         }, {
             origin: 'CLUB-0002',
-            start_time: moment().subtract(5, 'days')
+            start_time: moment().add(5, 'days')
         }];
         return Promise.map(documents, function (document) {
             document = new Event(document);
@@ -84,6 +84,18 @@ describe(__filename + '\n', function () {
                         expect(event.club.origin).to.equal(event.origin);
                         expect(event.club.clubName).to.equal('clubtree');
                     });
+                });
+        });
+
+        it('returns events in descending start time', function () {
+            return request(app).get('/events')
+                .then(function (res) {
+                    expect(res.status).to.equal(200);
+                    expect(res.body).to.have.length(2);
+
+                    let firstDate = new Date(res.body[0].start_time);
+                    let secondDate = new Date(res.body[1].start_time);
+                    expect(firstDate).to.be.greaterThan(secondDate);
                 });
         });
     });
