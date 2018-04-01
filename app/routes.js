@@ -2,6 +2,7 @@
 
 let moment = require('moment');
 var express = require('express');
+let Promise = require('bluebird');
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 var router = express.Router();
@@ -269,7 +270,13 @@ router.get('/events', function (req, res, next) {
   }
 
   promise.exec().then(function (documents) {
-    res.json(documents);
+    return Promise.map(documents, function (event) {
+      return models.Club.findOne({ origin: event.origin }).then(function (club) {
+        event.club = club;
+      });
+    }).then(function () {
+      res.json(documents);
+    });
   }).catch(function (err) {
     console.error(err);
     res.status(500).end({ error: { code: 500, message: "Internal Server Error" } });

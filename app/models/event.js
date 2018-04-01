@@ -16,6 +16,7 @@ let EventSchema = new mongoose.Schema({
             zip: String,
         }
     },
+    club: {}, // this is meant to be a read-only field
     start_time: Date,
     end_time: Date,
     id: String

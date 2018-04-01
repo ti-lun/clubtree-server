@@ -6,6 +6,7 @@ let request = require('supertest');
 let Promise = require('bluebird');
 
 let app = require('../app/app.js');
+let Club = require('../app/models').Club;
 let Event = require('../app/models/event.js');
 
 describe(__filename + '\n', function () {
@@ -14,6 +15,20 @@ describe(__filename + '\n', function () {
 
     before('reset database', function () {
         return Event.remove({});
+    });
+
+    before('add clubs', function () {
+        let clubs = [{
+            origin: 'CLUB-0001',
+            clubName: 'clubtree'
+        }, {
+            origin: 'CLUB-0002',
+            clubName: 'clubtree'
+        }];
+        return Promise.map(clubs, function (c) {
+            c = new Club(c);
+            return c.save();
+        });
     });
 
     before('add events', function () {
@@ -56,6 +71,19 @@ describe(__filename + '\n', function () {
                 .then(function (res) {
                     expect(res.status).to.equal(200);
                     expect(res.body).to.have.length(1);
+                });
+        });
+
+        it('returns club information in each event document', function () {
+            return request(app).get('/events')
+                .then(function (res) {
+                    expect(res.status).to.equal(200);
+                    expect(res.body).to.have.length(2);
+
+                    res.body.forEach(function (event) {
+                        expect(event.club.origin).to.equal(event.origin);
+                        expect(event.club.clubName).to.equal('clubtree');
+                    });
                 });
         });
     });
