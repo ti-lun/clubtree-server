@@ -23,7 +23,9 @@ function main() {
 
     mongoose.connection.once('open', (callback) => {
         return Promise.try(function () {
-            return mongoose.connection.dropDatabase();
+            return Club.collection.drop().catch(function (err) {
+                if (err.message !== 'ns not found') throw err;
+            });
         }).then(function () {
             return read(FILEPATH);
         }).mapSeries(function (row) {

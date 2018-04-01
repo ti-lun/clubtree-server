@@ -22,6 +22,7 @@ let softRequiredFields = [
 ];
 
 let ClubSchema = new mongoose.Schema({
+  origin: String,
   clubName: String,
   expandedQuery: [String],
   description: String,
