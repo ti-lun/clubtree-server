@@ -134,7 +134,7 @@ function load(website, origin) {
                     // console.log(event.end_time);
                     let document = new Event(event);
                     document.origin = origin;
-                    document.eventLink = 'https://www.facebook.com' + link;
+                    document.eventLink = 'https://www.facebook.com/' + event.id;
                     return document.save().tap(function () {
                         count++;
                     });
