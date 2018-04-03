@@ -95,10 +95,24 @@ function load(website, origin) {
             return link;
         }).catch(function (err) {
             if (_.get(err, 'response.error.message') === 'No node specified') {
-                // link not usable as is, but once we append "/events", hopefully it will solve the error
-                return link;
+                let matches;
+                if (matches = link.match(/\/groups\/(\d+)/)) {
+                    return '/' + matches[1];
+                } else if (matches = link.match(/\/groups\/([\.\w]+)/)) {
+                    let url = '/search?type=group&q=' + matches[1];
+                    return FB.api(url).then(function (res) {
+                        return '/' + res.data[0].id;
+                    });
+                } else {
+                    // link not usable as is, but once we append "/events", hopefully it will solve the error
+                    return link;
+                }
             } else if (_.includes(_.get(err, 'response.error.message'), 'Cannot query users by their username')) {
                 // generally can't get events from user profiles, so ignore these links
+                return null;
+            } else if (_.includes(_.get(err, 'response.error.message'), 'Some of the aliases you requested do not exist:')) {
+                // don't know why, but club can't be found - need to manually look into this
+                console.log('lookup: ' + link);
                 return null;
             } else {
                 throw err;
